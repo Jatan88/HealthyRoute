@@ -1,6 +1,6 @@
 # HealthyRoute
 
-DynamicLoadBalancer is a Java-based application layer load balancer that efficiently distributes client requests across multiple backend servers while ensuring high availability and reliability.
+HealthyRoute is a Java-based application layer load balancer that efficiently distributes client requests across multiple backend servers while ensuring high availability and reliability.
 
 ## Features
 

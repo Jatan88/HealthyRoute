@@ -16,7 +16,7 @@ Follow these steps to set up and run the HealthyRoute on your local machine:
 
 1. **Clone the Repository**: 
    ```bash
-   git clone https://github.com/yourusername/healthyroute.git
+   git clone https://github.com/yourusername/HealthyRoute.git
    
 2. **Compile the Code**:
    ```bash

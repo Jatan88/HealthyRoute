@@ -8,15 +8,15 @@ HealthyRoute is a Java-based application layer load balancer that efficiently di
 - **Health Checks**: Periodically checks the health status of backend servers and avoids sending requests to unhealthy servers.
 - **Concurrent Handling**: Handles multiple client connections concurrently using multi-threading.
 - **Dynamic Configuration**: Allows adding or removing backend servers dynamically without interrupting the load balancing operation.
-- **Scalability**: Can scale to accommodate a large number of backend servers and handle high volumes of client traffic.
+- **Scalability**: Can scale to accommodate many backend servers and handle high volumes of client traffic.
 
 ## Getting Started
 
-Follow these steps to set up and run the DynamicLoadBalancer on your local machine:
+Follow these steps to set up and run the HealthyRoute on your local machine:
 
 1. **Clone the Repository**: 
    ```bash
-   git clone https://github.com/yourusername/DynamicLoadBalancer.git
+   git clone https://github.com/yourusername/healthyroute.git
    
 2. **Compile the Code**:
    ```bash
@@ -27,7 +27,7 @@ Follow these steps to set up and run the DynamicLoadBalancer on your local machi
    java LoadBalancer
 
 ## Configuration
-You can configure the load balancer by modifying the backendServers list in the LoadBalancer.java file to add or remove backend servers. 
+You can configure the load balancer by modifying the backend Servers list in the LoadBalancer.java file to add or remove backend servers. 
 Additionally, you can adjust the health check interval and timeout duration in the HealthCheckTask class.
 
 ## Contributing

@@ -39,11 +39,11 @@ public class LoadBalancer {
         int port = 8083;
         try {
             try (ServerSocket serverSocket = new ServerSocket(port)) {
-                logger.info("Load balancer running on port " + port);
+                logger.log(Level.INFO, "Load balancer running on port {0}", port);
 
                 while (true) {
                     Socket clientSocket = serverSocket.accept();
-                    logger.info("Received request from " + clientSocket.getInetAddress());
+                    logger.log(Level.INFO, "Received request from {0}", clientSocket.getInetAddress());
 
                     // Handle client request in a new thread
                     new Thread(() -> handleRequest(clientSocket)).start();
@@ -63,7 +63,7 @@ public class LoadBalancer {
                 byte[] buffer = new byte[1024];
                 int bytesRead = inputStream.read(buffer);
                 String request = new String(buffer, 0, bytesRead);
-                logger.info("Request from client:\n" + request);
+                logger.log(Level.INFO, "Request from client:\n{0}", request);
                 // Forward the request to a healthy backend server using round-robin scheduling
                 forwardRequestToBackend(request, outputStream);
             }
@@ -113,7 +113,7 @@ public class LoadBalancer {
             // Send the response back to the client
             clientOutputStream.write(response.getBytes());
             clientOutputStream.flush();
-            logger.info("Response from backend server (" + backendHost + ":" + backendPort + "):\n" + response);
+            logger.log(Level.INFO, "Response from backend server ({0}:{1}):\n{2}", new Object[]{backendHost, backendPort, response});
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Error forwarding request to backend", e);
         }
@@ -128,7 +128,7 @@ public class LoadBalancer {
                 lock.lock();
                 try {
                     serverStatus.set(i, isHealthy);
-                    logger.info("Server " + server + " is " + (isHealthy ? "healthy" : "unhealthy"));
+                    logger.log(Level.INFO, "Server {0} is {1}", new Object[]{server, isHealthy ? "healthy" : "unhealthy"});
                 } finally {
                     lock.unlock();
                 }

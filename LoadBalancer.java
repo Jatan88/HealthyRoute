@@ -11,13 +11,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LoadBalancer {
-
     private static final List<String> backendServers = new ArrayList<>();
     private static final List<Boolean> serverStatus = new ArrayList<>();
     private static int currentServerIndex = 0;
     private static final Lock lock = new ReentrantLock();
+    private static final Logger logger = Logger.getLogger(LoadBalancer.class.getName());
 
     public static void main(String[] args) {
         // Add backend servers (IP:Port)
@@ -37,18 +39,18 @@ public class LoadBalancer {
         int port = 8083;
         try {
             try (ServerSocket serverSocket = new ServerSocket(port)) {
-                System.out.println("Load balancer running on port " + port);
+                logger.info("Load balancer running on port " + port);
 
                 while (true) {
                     Socket clientSocket = serverSocket.accept();
-                    System.out.println("Received request from " + clientSocket.getInetAddress());
+                    logger.info("Received request from " + clientSocket.getInetAddress());
 
                     // Handle client request in a new thread
                     new Thread(() -> handleRequest(clientSocket)).start();
                 }
             }
         } catch (IOException e) {
-            System.err.println(e);
+            logger.log(Level.SEVERE, "Server error", e);
         }
     }
 
@@ -61,13 +63,12 @@ public class LoadBalancer {
                 byte[] buffer = new byte[1024];
                 int bytesRead = inputStream.read(buffer);
                 String request = new String(buffer, 0, bytesRead);
-                System.out.println("Request from client:\n" + request);
+                logger.info("Request from client:\n" + request);
                 // Forward the request to a healthy backend server using round-robin scheduling
                 forwardRequestToBackend(request, outputStream);
-                // Close the client connection
             }
         } catch (IOException e) {
-            System.err.println(e);
+            logger.log(Level.SEVERE, "Error handling request", e);
         }
     }
 
@@ -86,7 +87,7 @@ public class LoadBalancer {
             } while (currentServerIndex != startIndex);
 
             if (!serverStatus.get(currentServerIndex)) {
-                System.out.println("All backend servers are unhealthy. Unable to forward request.");
+                logger.warning("All backend servers are unhealthy. Unable to forward request.");
                 return;
             }
         } finally {
@@ -112,9 +113,9 @@ public class LoadBalancer {
             // Send the response back to the client
             clientOutputStream.write(response.getBytes());
             clientOutputStream.flush();
-            System.out.println("Response from backend server (" + backendHost + ":" + backendPort + "):\n" + response);
+            logger.info("Response from backend server (" + backendHost + ":" + backendPort + "):\n" + response);
         } catch (IOException e) {
-            System.err.println(e);
+            logger.log(Level.SEVERE, "Error forwarding request to backend", e);
         }
     }
 
@@ -127,6 +128,7 @@ public class LoadBalancer {
                 lock.lock();
                 try {
                     serverStatus.set(i, isHealthy);
+                    logger.info("Server " + server + " is " + (isHealthy ? "healthy" : "unhealthy"));
                 } finally {
                     lock.unlock();
                 }
@@ -143,6 +145,7 @@ public class LoadBalancer {
                 int responseCode = connection.getResponseCode();
                 return (responseCode == 200);
             } catch (IOException e) {
+                logger.log(Level.WARNING, "Health check failed for server " + server, e);
                 return false; // Health check failed
             }
         }

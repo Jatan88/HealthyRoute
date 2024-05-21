@@ -9,6 +9,8 @@ HealthyRoute is a Java-based application layer load balancer that efficiently di
 - **Concurrent Handling**: Handles multiple client connections concurrently using multi-threading.
 - **Dynamic Configuration**: Allows adding or removing backend servers dynamically without interrupting the load balancing operation.
 - **Scalability**: Can scale to accommodate many backend servers and handle high volumes of client traffic.
+- **Logging**: Provides detailed logging of incoming requests, responses, and server health status.
+
 
 ## Getting Started
 
